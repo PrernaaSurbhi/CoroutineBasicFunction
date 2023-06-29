@@ -17,11 +17,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 //output
-
-// outside -thread is :main
-// E  coroutine -thread is :DefaultDispatcher-worker-1
-
-
+// I  network call 1
+// I  network call 2
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
 
@@ -30,11 +27,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         GlobalScope.launch {
-            delay(1000)
-            Log.e(Tag,"coroutine -thread is :${Thread.currentThread().name}")
+          val firstNetworkCallAnswer = nkt1()
+            println(firstNetworkCallAnswer)
+
+            val secondNetworkCallAnswer = nk2()
+            println(secondNetworkCallAnswer)
+
         }
 
-        Log.e(Tag,"outside -thread is :${Thread.currentThread().name}")
+    }
+
+    suspend fun nkt1():String{
+        delay(3000L)
+        return "network call 1"
+    }
+
+    suspend fun nk2():String{
+        delay(3000L)
+        return "network call 2"
     }
 
 }
