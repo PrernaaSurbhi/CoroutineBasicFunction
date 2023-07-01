@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
@@ -19,18 +21,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         coroutineText = findViewById(R.id.coroutine_text)
 
-        val job = GlobalScope.launch(Dispatchers.Default) {
+       val job =  GlobalScope.launch(Dispatchers.Default) {
+           Log.e(Tag,"starting long running process")
 
-            repeat(4){  //repeat is a kotlin inline function
-                Log.e(Tag,"job is getting repeated")
-                delay(1000L)
-            }
-        }
+           //withTimeOut is a suspension function which will cancel the coroutine after specific time ,
+           // as it is hard to handle job.cancel some time it provide coroutine scope.
+           withTimeout(3000L){
+               for(i in 30..40){
+                   if(isActive){
+                       Log.e(Tag,"i am long running process")
+                   }
+               }
+           }
 
-        runBlocking {
-             delay(2000L)
-            job.cancel()      // this is used to cancel the coroutine 
-            Log.e(Tag," main thread is cancel")
+           Log.e(Tag,"i am long running process")
+
         }
 
     }
