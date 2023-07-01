@@ -2,49 +2,41 @@ package com.example.coroutinebasicfunction
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowCompat
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import com.example.coroutinebasicfunction.databinding.ActivityMainBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-//output
-// I  network call 1
-// I  network call 2
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
+    private lateinit var coroutineText: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        coroutineText = findViewById(R.id.coroutine_text)
 
-        GlobalScope.launch {
-          val firstNetworkCallAnswer = nkt1()
-            println(firstNetworkCallAnswer)
+        GlobalScope.launch(Dispatchers.IO){
+            Log.d(Tag,"starting coroutine: +${Thread.currentThread().name}")
+            val nwkText =  nktCall()
 
-            val secondNetworkCallAnswer = nk2()
-            println(secondNetworkCallAnswer)
+            //withcontext(Dispacther.Io) -- it will help to switch the thread on coroutine
+
+            withContext(Dispatchers.Main){
+                Log.d(Tag,"receiving coroutine: +${Thread.currentThread().name}")
+                coroutineText.text = nwkText
+            }
 
         }
-
     }
 
-    suspend fun nkt1():String{
+    suspend fun nktCall():String{
         delay(3000L)
         return "network call 1"
     }
 
-    suspend fun nk2():String{
-        delay(3000L)
-        return "network call 2"
-    }
 
 }
