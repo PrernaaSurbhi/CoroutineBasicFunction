@@ -5,10 +5,9 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
@@ -19,23 +18,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         coroutineText = findViewById(R.id.coroutine_text)
 
-        GlobalScope.launch(Dispatchers.IO){
-            Log.d(Tag,"starting coroutine: +${Thread.currentThread().name}")
-            val nwkText =  nktCall()
+        Log.d(Tag,"before coroutine")
 
-            //withcontext(Dispacther.Io) -- it will help to switch the thread on coroutine
+        runBlocking {
+            Log.e(Tag,"cor start: ${Thread.currentThread().name}")
 
-            withContext(Dispatchers.Main){
-                Log.d(Tag,"receiving coroutine: +${Thread.currentThread().name}")
-                coroutineText.text = nwkText
+            //we can switch the thread inside the runBlocking with the help of launch() function
+
+            launch(Dispatchers.IO){
+                delay(3000L)
+                Log.e(Tag,"finished coroutine 1 launch scope: ${Thread.currentThread().name}")
             }
 
-        }
-    }
+            launch(Dispatchers.IO){
+                delay(4000L)
+                Log.e(Tag,"finished coroutine 2")
+            }
 
-    suspend fun nktCall():String{
-        delay(3000L)
-        return "network call 1"
+            Log.e(Tag,"start of running block: ${Thread.currentThread().name}")
+            delay(3000L)
+            Log.e(Tag,"end of running block")
+        }
+
+        Log.e(Tag,"after running block")
+
     }
 
 
