@@ -28,9 +28,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         runBlocking {
-            job.join() //job.join -- suspend function ,
-                       // so it is called inside coroutine scope here , we might called it from other suspend function.
-            Log.e(Tag,"repeation job complete")
+             delay(2000L)
+            job.cancel()      // this is used to cancel the coroutine 
+            Log.e(Tag," main thread is cancel")
         }
 
     }
