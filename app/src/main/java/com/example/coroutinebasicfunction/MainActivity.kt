@@ -6,11 +6,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlin.system.measureTimeMillis
+
+//output
+//MainActivity  com.example.coroutinebasicfunction   D  network 1
+//MainActivity  com.example.coroutinebasicfunction   D  network 2
+//MainActivity  com.example.coroutinebasicfunction   D  request took 3008 ms
+
 
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
@@ -19,25 +27,28 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        coroutineText = findViewById(R.id.coroutine_text)
 
-       val job =  GlobalScope.launch(Dispatchers.Default) {
-           Log.e(Tag,"starting long running process")
+        GlobalScope.launch(Dispatchers.IO) {
+            val time = measureTimeMillis {
+                val ans1 = async { network1() }
+                val ans2 = async { network2() }
 
-           //withTimeOut is a suspension function which will cancel the coroutine after specific time ,
-           // as it is hard to handle job.cancel some time it provide coroutine scope.
-           withTimeout(3000L){
-               for(i in 30..40){
-                   if(isActive){
-                       Log.e(Tag,"i am long running process")
-                   }
-               }
-           }
+                Log.d(Tag,ans1.await())
+                Log.d(Tag,ans2.await())
+            }
 
-           Log.e(Tag,"i am long running process")
-
+            Log.d(Tag,"request took $time ms")
         }
+    }
 
+    suspend fun network1(): String{
+        delay(3000L)
+        return "network 1"
+    }
+
+    suspend fun network2(): String{
+        delay(3000L)
+        return "network 2"
     }
 
 

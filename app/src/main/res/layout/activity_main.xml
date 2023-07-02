@@ -12,7 +12,6 @@
     <TextView
         android:id="@+id/coroutine_text"
         android:gravity="center_horizontal"
-        android:text="hello world "
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
