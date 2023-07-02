@@ -9,10 +9,11 @@
     android:gravity="center"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/coroutine_text"
+    <Button
+        android:id="@+id/coroutine_button"
         android:gravity="center_horizontal"
-        android:layout_width="match_parent"
+        android:text="Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>

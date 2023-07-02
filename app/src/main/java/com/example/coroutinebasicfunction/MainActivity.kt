@@ -1,9 +1,12 @@
 package com.example.coroutinebasicfunction
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -15,41 +18,42 @@ import kotlinx.coroutines.withTimeout
 import kotlin.system.measureTimeMillis
 
 //output
-//MainActivity  com.example.coroutinebasicfunction   D  network 1
-//MainActivity  com.example.coroutinebasicfunction   D  network 2
-//MainActivity  com.example.coroutinebasicfunction   D  request took 3008 ms
+//MainActivity            com.example.coroutinebasicfunction   D  still running
+//MainActivity            com.example.coroutinebasicfunction   D  still running
+//MainActivity            com.example.coroutinebasicfunction   D  still running
+//MainActivity            com.example.coroutinebasicfunction   D  still running
+//MainActivity            com.example.coroutinebasicfunction   D  still running
+
+//here first coroutine survive till life cycle of activity.
+// once activity end after second coroutine start , lifecycleScope coroutine will also end.
 
 
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
-    private lateinit var coroutineText: TextView
+    private lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        GlobalScope.launch(Dispatchers.IO) {
-            val time = measureTimeMillis {
-                val ans1 = async { network1() }
-                val ans2 = async { network2() }
+        button = findViewById(R.id.coroutine_button)
 
-                Log.d(Tag,ans1.await())
-                Log.d(Tag,ans2.await())
-            }
+        button.setOnClickListener {
+           lifecycleScope.launch{
+               while (true){
+                   delay(1000L)
+                   Log.d(Tag,"still running")
+               }
+           }
 
-            Log.d(Tag,"request took $time ms")
+          GlobalScope.launch {
+              delay(5000L)
+              Intent(this@MainActivity,SecondActivity::class.java).also{
+                  startActivity(it)
+                  finish()
+              }
+          }
         }
     }
-
-    suspend fun network1(): String{
-        delay(3000L)
-        return "network 1"
-    }
-
-    suspend fun network2(): String{
-        delay(3000L)
-        return "network 2"
-    }
-
 
 }
