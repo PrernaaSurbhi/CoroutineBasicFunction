@@ -4,18 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
+import com.example.coroutinebasicfunction.flow.ChannelActivity
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
-import kotlin.system.measureTimeMillis
+
 
 //output
 //MainActivity            com.example.coroutinebasicfunction   D  still running
@@ -31,12 +26,21 @@ import kotlin.system.measureTimeMillis
 class MainActivity : AppCompatActivity() {
     val Tag = "MainActivity"
     private lateinit var button: Button
+    private lateinit var flowButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         button = findViewById(R.id.coroutine_button)
+        flowButton = findViewById(R.id.flow_button)
+
+        flowButton.setOnClickListener {
+            Intent(this@MainActivity, ChannelActivity::class.java).also{
+                startActivity(it)
+                finish()
+            }
+        }
 
         button.setOnClickListener {
            lifecycleScope.launch{
