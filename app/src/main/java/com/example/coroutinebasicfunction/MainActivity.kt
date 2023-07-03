@@ -6,8 +6,7 @@ import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.coroutinebasicfunction.flow.ChannelActivity
-import com.example.coroutinebasicfunction.flow.FlowActivity
+import com.example.coroutinebasicfunction.flow.FlowOnActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         flowButton = findViewById(R.id.flow_button)
 
         flowButton.setOnClickListener {
-            Intent(this@MainActivity, FlowActivity::class.java).also{
+            Intent(this@MainActivity, FlowOnActivity::class.java).also{
                 startActivity(it)
                 finish()
             }
