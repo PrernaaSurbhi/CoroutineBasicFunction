@@ -9,8 +9,11 @@ import androidx.lifecycle.lifecycleScope
 import com.example.coroutinebasicfunction.flow.FlowOnActivity
 import com.example.coroutinebasicfunction.flow.SharedFlowActivity
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 //output
@@ -36,6 +39,18 @@ class MainActivity : AppCompatActivity() {
         button = findViewById(R.id.coroutine_button)
         flowButton = findViewById(R.id.flow_button)
 
+        runBlocking{
+            println("main starts")
+            joinAll(
+                async{
+                    coroutine(1,500)
+                },
+
+                async{
+                    coroutine(2,300)
+                }
+            )
+        }
         flowButton.setOnClickListener {
             Intent(this@MainActivity, SharedFlowActivity::class.java).also{
                 startActivity(it)
@@ -59,6 +74,12 @@ class MainActivity : AppCompatActivity() {
               }
           }
         }
+    }
+
+    suspend fun coroutine(number : Int,delay:Long){
+        println("Coroutine $number starts work")
+        delay(delay)
+        println("Coroutine $number has  finished")
     }
 
 }
